@@ -10,6 +10,13 @@ import java.util.ArrayList;
 
 import Model.User;
 
+import java.util.Date;
+import java.sql.Timestamp;
+
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class Frame extends javax.swing.JFrame {
 
     public Frame() {
@@ -260,9 +267,12 @@ public class Frame extends javax.swing.JFrame {
         ArrayList<User> users = main.sqlite.getUsers();
         boolean isExist = false;
         for(int nCtr = 0; nCtr < users.size(); nCtr++){
-            if(users.get(nCtr).getUsername().equals(username) && users.get(nCtr).getPassword().equals(password)){
+            // CASE INSENSITIVE
+            if(users.get(nCtr).getUsername().equalsIgnoreCase(username) && users.get(nCtr).getPassword().equals(getMd5(password))){
                 isExist = true;
                 System.out.println("login successful");
+                //LOG FOR LOGIN
+                main.sqlite.addLogs("NOTICE", username.toLowerCase(), "User Logged In Successfully", new Timestamp(new Date().getTime()).toString());
             }
         }
         return isExist;
@@ -274,6 +284,8 @@ public class Frame extends javax.swing.JFrame {
     
     public void registerAction(String username, String password, String confpass){
         ArrayList<User> users = main.sqlite.getUsers();
+        boolean isLong = false;
+        boolean hasDigit = false;
         boolean isUnique = true;
         if(username.trim().isEmpty() || password.trim().isEmpty() || confpass.trim().isEmpty()){ // CHECK IF INPUTS ARE EMPTY
             System.out.println("empty field/s");  
@@ -282,22 +294,91 @@ public class Frame extends javax.swing.JFrame {
                 
                 //add condition for strong password to push in CHECKS IF USERNAME ALREADY EXIST
                 
-                
-                for(int nCtr = 0; nCtr < users.size(); nCtr++){// CHECKS IF USERNAME ALREADY EXIST
-                    if(users.get(nCtr).getUsername().equals(username)){
-                    isUnique = false;
+                if(checkString(password)){
+                    for(int nCtr = 0; nCtr < users.size(); nCtr++){// CHECKS IF USERNAME ALREADY EXIST
+                        if(users.get(nCtr).getUsername().equals(username)){
+                        isUnique = false;
+                        }
                     }
-                }
-                if(isUnique){
-                    main.sqlite.addUser(username, password);
-                    System.out.println("created a user");
+                    if(isUnique){
+                        String hashPassword = getMd5(password);
+                        // CASE INSENSITIVE
+                        main.sqlite.addUser(username.toLowerCase(), hashPassword);//HASH PASSWORD
+                        //LOG FOR USER CREATION 
+                         main.sqlite.addLogs("NOTICE", username.toLowerCase(), "User creation successful", new Timestamp(new Date().getTime()).toString());
+                        System.out.println("created a user");
+                    }else{
+                        System.out.println("username exist");
+                    }
                 }else{
-                    System.out.println("username exist");
+                    System.out.println("password must be strong");
                 }
+               
             }else{
                 System.out.println("password & confirm password not match");
             }
         }
+    }
+    //MD5 HASHING
+    public String getMd5(String input)
+    {
+        try {
+ 
+            // Static getInstance method is called with hashing MD5
+            MessageDigest md = MessageDigest.getInstance("MD5");
+ 
+            // digest() method is called to calculate message digest
+            // of an input digest() return array of byte
+            byte[] messageDigest = md.digest(input.getBytes());
+ 
+            // Convert byte array into signum representation
+            BigInteger no = new BigInteger(1, messageDigest);
+ 
+            // Convert message digest into hex value
+            String hashtext = no.toString(16);
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+            return hashtext;
+        }
+ 
+        // For specifying wrong message digest algorithms
+        catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    private boolean checkString(String str) {
+        char ch;
+        boolean capitalFlag = false;
+        boolean lowerCaseFlag = false;
+        boolean numberFlag = false;
+        boolean specialFlag = false;
+        boolean twelveFlag = false;
+        String specialCharactersString = "!@#$%&*()'+,-./:;<=>?[]^_`{|}";
+        
+        if(str.length() >= 12){
+            twelveFlag = true;
+        }
+        for(int i=0;i < str.length();i++) {
+            ch = str.charAt(i);
+            if( Character.isDigit(ch)) {
+                numberFlag = true;
+            }
+            else if (Character.isUpperCase(ch)) {
+                capitalFlag = true;
+            } 
+            else if (Character.isLowerCase(ch)) {
+                lowerCaseFlag = true;
+            }
+            else if(specialCharactersString.contains(Character.toString(ch))) {
+                //System.out.println(inputString+ " contains special character");
+                specialFlag = true;
+            }    
+            if(twelveFlag && numberFlag && capitalFlag && lowerCaseFlag && specialFlag)
+                return true;
+        }
+        return false;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

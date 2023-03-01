@@ -6,6 +6,9 @@ import Model.Logs;
 import Model.Product;
 import Model.User;
 import View.Frame;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,9 +19,11 @@ public class Main {
     
     public SQLite sqlite;
     
+    
     public static void main(String[] args) {
         new Main().init();
     }
+    
     
     public void init(){
         // Initialize a driver object
@@ -31,13 +36,13 @@ public class Main {
 //        sqlite.dropHistoryTable();
 //        sqlite.dropLogsTable();
 //        sqlite.dropProductTable();
-//        sqlite.dropUserTable();
+        //sqlite.dropUserTable();
 //        
 //        // Create users table if not exist
 //        sqlite.createHistoryTable();
 //        sqlite.createLogsTable();
 //        sqlite.createProductTable();
-//        sqlite.createUserTable();
+        //sqlite.createUserTable();
 //        
 //        // Add sample history
 //        sqlite.addHistory("admin", "Antivirus", 1, "2019-04-03 14:30:00.000");
@@ -55,11 +60,11 @@ public class Main {
 //        sqlite.addProduct("Scanner", 10, 100.0);
 //
 //        // Add sample users
-//        sqlite.addUser("admin", "qwerty1234" , 5);
-//        sqlite.addUser("manager", "qwerty1234", 4);
-//        sqlite.addUser("staff", "qwerty1234", 3);
-//        sqlite.addUser("client1", "qwerty1234", 2);
-//        sqlite.addUser("client2", "qwerty1234", 2);
+//        sqlite.addUser("admin", getMd5("qwerty1234") , 5);
+//        sqlite.addUser("manager", getMd5("qwerty1234"), 4);
+//        sqlite.addUser("staff", getMd5("qwerty1234"), 3);
+        //sqlite.addUser("client1", getMd5("qwerty1234"), 2);
+        //sqlite.addUser("client2", getMd5("qwerty1234"), 2);
           //sqlite.removeUser("");
 //        
 //        
@@ -105,6 +110,34 @@ public class Main {
         // Initialize User Interface
         Frame frame = new Frame();
         frame.init(this);
+    }
+    
+    //MD5 HASHING
+    public String getMd5(String input)
+    {
+        try {
+ 
+            // Static getInstance method is called with hashing MD5
+            MessageDigest md = MessageDigest.getInstance("MD5");
+ 
+            // digest() method is called to calculate message digest
+            // of an input digest() return array of byte
+            byte[] messageDigest = md.digest(input.getBytes());
+ 
+            // Convert byte array into signum representation
+            BigInteger no = new BigInteger(1, messageDigest);
+ 
+            // Convert message digest into hex value
+            String hashtext = no.toString(16);
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+            return hashtext;
+        }
+        // For specifying wrong message digest algorithms
+        catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
     
 }

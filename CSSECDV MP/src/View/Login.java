@@ -1,6 +1,10 @@
 
 package View;
 
+import java.sql.Timestamp;
+import java.util.Date;
+import Controller.Main;
+
 public class Login extends javax.swing.JPanel {
 
     public Frame frame;
@@ -85,6 +89,7 @@ public class Login extends javax.swing.JPanel {
     private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
         boolean isExist = frame.loginAction(usernameFld.getText(), passwordFld.getText());
         if(isExist){
+            
             frame.mainNav();
         }else{
             System.out.println("invalid username/password");
