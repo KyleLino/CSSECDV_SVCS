@@ -6,6 +6,10 @@ import java.awt.CardLayout;
 import java.awt.Dimension;
 import javax.swing.WindowConstants;
 
+import java.util.ArrayList;
+
+import Model.User;
+
 public class Frame extends javax.swing.JFrame {
 
     public Frame() {
@@ -252,12 +256,44 @@ public class Frame extends javax.swing.JFrame {
         frameView.show(Container, "loginPnl");
     }
     
+    public boolean loginAction(String username, String password){
+        ArrayList<User> users = main.sqlite.getUsers();
+        boolean isExist = false;
+        for(int nCtr = 0; nCtr < users.size(); nCtr++){
+            if(users.get(nCtr).getUsername().equals(username) && users.get(nCtr).getPassword().equals(password)){
+                isExist = true;
+                System.out.println("login successful");
+            }
+        }
+        return isExist;
+    }
+    
     public void registerNav(){
         frameView.show(Container, "registerPnl");
     }
     
     public void registerAction(String username, String password, String confpass){
-        main.sqlite.addUser(username, password);
+        ArrayList<User> users = main.sqlite.getUsers();
+        boolean isUnique = true;
+        if(username.trim().isEmpty() || password.trim().isEmpty() || confpass.trim().isEmpty()){ // CHECK IF INPUTS ARE EMPTY
+            System.out.println("empty field/s");  
+        }else{
+            if(password.equals(confpass)){ // CHECKS IF PASSWORD AND CONFPASSWORD IS THE SAME
+                for(int nCtr = 0; nCtr < users.size(); nCtr++){// CHECKS IF USERNAME ALREADY EXIST
+                    if(users.get(nCtr).getUsername().equals(username)){
+                    isUnique = false;
+                    }
+                }
+                if(isUnique){
+                    main.sqlite.addUser(username, password);
+                    System.out.println("created a user");
+                }else{
+                    System.out.println("username exist");
+                }
+            }else{
+                System.out.println("password & confirm password not match");
+            }
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

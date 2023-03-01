@@ -60,6 +60,7 @@ public class Main {
 //        sqlite.addUser("staff", "qwerty1234", 3);
 //        sqlite.addUser("client1", "qwerty1234", 2);
 //        sqlite.addUser("client2", "qwerty1234", 2);
+          //sqlite.removeUser("");
 //        
 //        
 //        // Get users
