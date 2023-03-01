@@ -284,8 +284,6 @@ public class Frame extends javax.swing.JFrame {
     
     public void registerAction(String username, String password, String confpass){
         ArrayList<User> users = main.sqlite.getUsers();
-        boolean isLong = false;
-        boolean hasDigit = false;
         boolean isUnique = true;
         if(username.trim().isEmpty() || password.trim().isEmpty() || confpass.trim().isEmpty()){ // CHECK IF INPUTS ARE EMPTY
             System.out.println("empty field/s");  
@@ -293,7 +291,6 @@ public class Frame extends javax.swing.JFrame {
             if(password.equals(confpass)){ // CHECKS IF PASSWORD AND CONFPASSWORD IS THE SAME
                 
                 //add condition for strong password to push in CHECKS IF USERNAME ALREADY EXIST
-                
                 if(checkString(password)){
                     for(int nCtr = 0; nCtr < users.size(); nCtr++){// CHECKS IF USERNAME ALREADY EXIST
                         if(users.get(nCtr).getUsername().equals(username)){
@@ -348,6 +345,7 @@ public class Frame extends javax.swing.JFrame {
         }
     }
     
+    // CHECKS IF THERE ARE ATLEAST 12 CHARACTERS, UPPERCASE, LOWERCASE, NUMBER, SPECIAL CHARACTER
     private boolean checkString(String str) {
         char ch;
         boolean capitalFlag = false;
