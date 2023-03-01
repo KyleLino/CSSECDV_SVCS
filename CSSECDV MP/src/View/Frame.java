@@ -279,6 +279,10 @@ public class Frame extends javax.swing.JFrame {
             System.out.println("empty field/s");  
         }else{
             if(password.equals(confpass)){ // CHECKS IF PASSWORD AND CONFPASSWORD IS THE SAME
+                
+                //add condition for strong password to push in CHECKS IF USERNAME ALREADY EXIST
+                
+                
                 for(int nCtr = 0; nCtr < users.size(); nCtr++){// CHECKS IF USERNAME ALREADY EXIST
                     if(users.get(nCtr).getUsername().equals(username)){
                     isUnique = false;
