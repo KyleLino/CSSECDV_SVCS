@@ -1,6 +1,6 @@
-// Moses Algenio | Kyle Lino
-// CSSECDV - S15
-// MCO1
+// Moses Algenio | Kyle Lino 
+// CSSECDV - S15 - GRP12
+// [CS1] Case Study 1 - Authentication Best Practices for Security Svcs
 
 package Controller;
 
@@ -16,8 +16,6 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
-
-//test
 
 public class Main {
     
