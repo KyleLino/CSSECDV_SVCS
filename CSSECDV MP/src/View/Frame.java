@@ -293,7 +293,8 @@ public class Frame extends javax.swing.JFrame {
                 //add condition for strong password to push in CHECKS IF USERNAME ALREADY EXIST
                 if(checkString(password)){
                     for(int nCtr = 0; nCtr < users.size(); nCtr++){// CHECKS IF USERNAME ALREADY EXIST
-                        if(users.get(nCtr).getUsername().equals(username)){
+                        //if(users.get(nCtr).getUsername().equals(username)){
+                        if(users.get(nCtr).getUsername().equals(username.toLowerCase())){ // NEW Mar.16,2023
                         isUnique = false;
                         }
                     }
