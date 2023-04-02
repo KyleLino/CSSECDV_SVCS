@@ -62,11 +62,11 @@ public class Main {
 //        sqlite.addProduct("Scanner", 10, 100.0);
 //
 //        // Add sample users
-//        sqlite.addUser("admin", getMd5("qwerty1234") , 5);
-//        sqlite.addUser("manager", getMd5("qwerty1234"), 4);
-//        sqlite.addUser("staff", getMd5("qwerty1234"), 3);
-        //sqlite.addUser("client1", getMd5("qwerty1234"), 2);
-        //sqlite.addUser("client2", getMd5("qwerty1234"), 2);
+        /*sqlite.addUser("admin", getMd5("qwerty1234") , 5,0);
+        sqlite.addUser("manager", getMd5("qwerty1234"), 4,0);
+        sqlite.addUser("staff", getMd5("qwerty1234"), 3,0);
+        sqlite.addUser("client1", getMd5("qwerty1234"), 2,0);
+        sqlite.addUser("client2", getMd5("qwerty1234"), 2,0);*/
           //sqlite.removeUser("");
 //        
 //        

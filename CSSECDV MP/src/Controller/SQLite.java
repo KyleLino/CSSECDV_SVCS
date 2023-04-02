@@ -279,8 +279,8 @@ public class SQLite {
         return users;
     }
     
-    public void addUser(String username, String password, int role) {
-        String sql = "INSERT INTO users(username,password,role) VALUES('" + username + "','" + password + "','" + role + "')";
+    public void addUser(String username, String password, int role, int locked) {
+        String sql = "INSERT INTO users(username,password,role,locked) VALUES('" + username + "','" + password + "','" + role + "','" + locked + "')";
         
         try (Connection conn = DriverManager.getConnection(driverURL);
             Statement stmt = conn.createStatement()){

@@ -18,7 +18,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Frame extends javax.swing.JFrame {
-
+    
+    public int lockCounter = 0;
+    public String firstUsername = "";
+    public boolean isFirstUsername = true;
+    
     public Frame() {
         initComponents();
     }
@@ -266,16 +270,101 @@ public class Frame extends javax.swing.JFrame {
     public boolean loginAction(String username, String password){
         ArrayList<User> users = main.sqlite.getUsers();
         boolean isExist = false;
+        boolean isSuccess = false;
+        
+        if(isFirstUsername){
+            firstUsername = username;
+            isFirstUsername = false;
+        }
+        
         for(int nCtr = 0; nCtr < users.size(); nCtr++){
-            // CASE INSENSITIVE
-            if(users.get(nCtr).getUsername().equalsIgnoreCase(username) && users.get(nCtr).getPassword().equals(getMd5(password))){
+            
+            if(users.get(nCtr).getUsername().equalsIgnoreCase(username)){//username exist
                 isExist = true;
-                System.out.println("login successful");
-                //LOG FOR LOGIN
-                main.sqlite.addLogs("NOTICE", username.toLowerCase(), "User Logged In Successfully", new Timestamp(new Date().getTime()).toString());
+                if(users.get(nCtr).getPassword().equals(getMd5(password))){//password correct
+                    if(users.get(nCtr).getLocked() != 1){//user not locked
+                        isSuccess = true;
+                        System.out.println("login successful");
+                        
+                        //LOG FOR LOGIN
+                        main.sqlite.addLogs("NOTICE", username.toLowerCase(), "User Logged In Successfully", new Timestamp(new Date().getTime()).toString());
+                    }else{//user locked
+                        System.out.println("User Locked. Communicate with the Admin in-person in order to re-enable the account");
+                    }
+                }else if(firstUsername.equalsIgnoreCase(username)){//wrong password same user
+                    lockCounter ++;
+                    System.out.println("Incorrect Password1");
+                    System.out.println(lockCounter);
+                }else if(!firstUsername.equalsIgnoreCase(username)){//wrong password diff user
+                    lockCounter = 0;
+                    System.out.println("Incorrect Password2");
+                    System.out.println(lockCounter);
+                    firstUsername = username;
+                }
+                
+                if(lockCounter == 5 && users.get(nCtr).getLocked() != 1){
+                    System.out.println("User Locked. Communicate with the Admin in-person in order to re-enable the account");
+                    main.sqlite.removeUser(username.toLowerCase());
+                    main.sqlite.addUser(username.toLowerCase(), getMd5(password),users.get(nCtr).getRole(),1);
+                }
             }
         }
-        return isExist;
+        
+        if(!isExist){
+            lockCounter = 0;
+            System.out.println("User Not Exist");
+            System.out.println(lockCounter);
+        }
+
+            
+            // CASE INSENSITIVE
+            // CORRECT INPUTS
+            /*
+            if(users.get(nCtr).getUsername().equalsIgnoreCase(username) && users.get(nCtr).getPassword().equals(getMd5(password))){
+                //NOT LOCKED
+                if(users.get(nCtr).getLocked() != 1){
+                    isExist = true;
+                    System.out.println("login successful");
+                    //LOG FOR LOGIN
+                    main.sqlite.addLogs("NOTICE", username.toLowerCase(), "User Logged In Successfully", new Timestamp(new Date().getTime()).toString());
+                }
+                //LOCKED
+                else{
+                    System.out.println("User Locked. Communicate with the Admin in-person in order to re-enable the account");
+                }
+                
+            }
+            //SAME USERNAME FROM BEFORE
+            else if(users.get(nCtr).getUsername().equalsIgnoreCase(username) && firstUsername.equalsIgnoreCase(username)){
+                lockCounter ++;
+                System.out.println("Incorrect Password1");
+                System.out.println(lockCounter);
+            }
+            //DIFF USERNAME EXIST
+            else if(users.get(nCtr).getUsername().equalsIgnoreCase(username) && !firstUsername.equalsIgnoreCase(username)){
+                lockCounter = 1;
+                System.out.println("Incorrect Password / NEW USERNAME");
+                System.out.println(lockCounter);
+                firstUsername = username;
+            }
+            //DIFF USERNAME NOT EXIST
+            else if(!firstUsername.equalsIgnoreCase(username)){
+                lockCounter = 0;
+                System.out.println("User Not Exist");
+                System.out.println(lockCounter);
+                firstUsername = username;
+            }
+            
+            if(lockCounter == 5){
+                System.out.println("User Locked. Communicate with the Admin in-person in order to re-enable the account");
+                main.sqlite.removeUser(username.toLowerCase());
+                main.sqlite.addUser(username.toLowerCase(), getMd5(password),users.get(nCtr).getRole(),1);
+            }
+        }
+        
+        */
+        
+        return isSuccess;
     }
     
     public void registerNav(){
