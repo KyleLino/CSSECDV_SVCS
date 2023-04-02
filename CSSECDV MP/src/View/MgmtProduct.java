@@ -193,6 +193,12 @@ public class MgmtProduct extends javax.swing.JPanel {
 
             if (result == JOptionPane.OK_OPTION) {
                 System.out.println(stockFld.getText());
+                
+                // ADD SQL PURCHASE (HISTORY)
+                    // ONLY ALLOW INT INPUT
+                    // MUST BE LESS THAN STOCK
+                // UPDATE PRODUCT STOCK AFTER SUCCESSFUL PURCHASE
+                // ADD LOG 
             }
         }
     }//GEN-LAST:event_purchaseBtnActionPerformed

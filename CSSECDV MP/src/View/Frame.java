@@ -16,6 +16,7 @@ import java.sql.Timestamp;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import javax.swing.JOptionPane;
 
 public class Frame extends javax.swing.JFrame {
     
@@ -279,6 +280,7 @@ public class Frame extends javax.swing.JFrame {
                 adminHomePnl.showPnl("home");
                 contentView.show(Content, "adminHomePnl");
                 adminBtn.setVisible(true);
+                //Add set user method to each panel to pass current username?
                 break;
             case 4:
                 managerHomePnl.showPnl("home");
@@ -343,9 +345,12 @@ public class Frame extends javax.swing.JFrame {
                 
                 if(lockCounter == 5 && users.get(nCtr).getLocked() != 1){
                     System.out.println("User Locked. Communicate with the Admin in-person in order to re-enable the account");
-                    // DON'T REMOVE USER, UPDATE INSTEAD
-                    main.sqlite.removeUser(username.toLowerCase());
-                    main.sqlite.addUser(username.toLowerCase(), getMd5(password),users.get(nCtr).getRole(),1);
+                    // TO DO: DON'T REMOVE USER, UPDATE INSTEAD
+                    main.sqlite.updateUserLock(username.toLowerCase(), 1);
+                    //main.sqlite.removeUser(username.toLowerCase());
+                    //main.sqlite.addUser(username.toLowerCase(), getMd5(password),users.get(nCtr).getRole(),1);
+                    
+                    JOptionPane.showMessageDialog(null, "Exceeded maximum login attempts. Please communicate with the Admin in-person in order to re-enable the account.", "User Locked", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }

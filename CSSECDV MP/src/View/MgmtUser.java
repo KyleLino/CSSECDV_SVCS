@@ -191,6 +191,12 @@ public class MgmtUser extends javax.swing.JPanel {
             if(result != null){
                 System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
                 System.out.println(result.charAt(0));
+                
+                sqlite.updateUserRole(tableModel.getValueAt(table.getSelectedRow(), 0).toString(), Character.getNumericValue(result.charAt(0)));
+                //TO DO: ADD LOGS
+                //USER, [admin/current username], User updated + tableModel.getValueAt(table.getSelectedRow(), 0).toString() + to + result.charAt(0)
+                
+                init(); //reload
             }
         }
     }//GEN-LAST:event_editRoleBtnActionPerformed
@@ -201,6 +207,12 @@ public class MgmtUser extends javax.swing.JPanel {
             
             if (result == JOptionPane.YES_OPTION) {
                 System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
+                
+                sqlite.removeUser(tableModel.getValueAt(table.getSelectedRow(), 0).toString());
+                //TO DO: ADD LOGS
+                //USER, [admin/current username], User deleted + tableModel.getValueAt(table.getSelectedRow(), 0).toString()
+                
+                init(); //reload
             }
         }
     }//GEN-LAST:event_deleteBtnActionPerformed
@@ -208,14 +220,23 @@ public class MgmtUser extends javax.swing.JPanel {
     private void lockBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lockBtnActionPerformed
         if(table.getSelectedRow() >= 0){
             String state = "lock";
+            int locked = 1;
             if("1".equals(tableModel.getValueAt(table.getSelectedRow(), 3) + "")){
                 state = "unlock";
+                locked = 0;
             }
             
-            int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to " + state + " " + tableModel.getValueAt(table.getSelectedRow(), 0) + "?", "DELETE USER", JOptionPane.YES_NO_OPTION);
+            int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to " + state + " " + tableModel.getValueAt(table.getSelectedRow(), 0) + "?", "LOCK/UNLOCK USER", JOptionPane.YES_NO_OPTION);
             
             if (result == JOptionPane.YES_OPTION) {
                 System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
+                
+                sqlite.updateUserLock(tableModel.getValueAt(table.getSelectedRow(), 0).toString(), locked);
+                
+                //TO DO: ADD LOGS
+                //USER, [admin/current username], User + state + ed + tableModel.getValueAt(table.getSelectedRow(), 0).toString()
+                
+                init(); //reload
             }
         }
     }//GEN-LAST:event_lockBtnActionPerformed
@@ -236,6 +257,19 @@ public class MgmtUser extends javax.swing.JPanel {
             if (result == JOptionPane.OK_OPTION) {
                 System.out.println(password.getText());
                 System.out.println(confpass.getText());
+                
+                if(password.getText().equals(confpass.getText())) {
+                    // TO DO: APPLY PASSWORD POLICIES
+                    // If valid password
+                        // sqlite.updateUserPassword(tableModel.getValueAt(table.getSelectedRow(), 0).toString(), hashPassword);
+                        // TO DO: Add logs
+                        // USER, [admin/current username], User + state + ed + tableModel.getValueAt(table.getSelectedRow(), 0).toString()
+                        // init(); //reload
+                    // Else, password change unsuccessful
+                }
+                else {
+                    System.out.println("Password & confirm password do not match"); 
+                }
             }
         }
     }//GEN-LAST:event_chgpassBtnActionPerformed

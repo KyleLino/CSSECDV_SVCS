@@ -334,4 +334,40 @@ public class SQLite {
         }
         return user;
     }
+    
+    public void updateUserRole(String username, int role) {
+        String sql = "UPDATE users SET role = " + role + " WHERE username = '" + username + "' COLLATE NOCASE;";
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            Statement stmt = conn.createStatement()){
+            stmt.executeQuery(sql);
+            System.out.println("User " + username + "'s role has been updated.");
+            
+        } catch (Exception ex) {
+            System.out.print(ex);
+        }
+    }
+    
+     public void updateUserLock(String username, int lock) {
+        String sql = "UPDATE users SET locked = " + lock + " WHERE username = '" + username + "' COLLATE NOCASE;";
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            Statement stmt = conn.createStatement()){
+            stmt.executeQuery(sql);
+            System.out.println("User " + username + "'s locked status has been updated.");
+            
+        } catch (Exception ex) {
+            System.out.print(ex);
+        }
+    }
+     
+     public void updateUserPassword(String username, String password) {
+        String sql = "UPDATE users SET password = '" + password + "' WHERE username = '" + username + "' COLLATE NOCASE;";
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            Statement stmt = conn.createStatement()){
+            stmt.executeQuery(sql);
+            System.out.println("User " + username + "'s password has been updated.");
+            
+        } catch (Exception ex) {
+            System.out.print(ex);
+        }
+    }
 }
