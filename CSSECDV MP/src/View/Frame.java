@@ -19,6 +19,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class Frame extends javax.swing.JFrame {
     
+    //FOR DISABLE USER
     public int lockCounter = 0;
     public String firstUsername = "";
     public boolean isFirstUsername = true;
