@@ -222,6 +222,21 @@ public class MgmtProduct extends javax.swing.JPanel {
             System.out.println(nameFld.getText());
             System.out.println(stockFld.getText());
             System.out.println(priceFld.getText());
+            
+            int stock = Integer.parseInt(stockFld.getText());
+            double price = Double.parseDouble(priceFld.getText());
+            
+            //Product must not exist already; Changed getProduct(name) to be case insensitive
+            if (!nameFld.getText().isBlank() && stock > 0 && price > 0 && sqlite.getProduct(nameFld.getText()) == null) { 
+                sqlite.addProduct(nameFld.getText(), stock, price);
+                // TO DO: ADD LOGS
+                // PROD, [current username], User added + stock + nameFld.getText() + products worth + price + each
+                
+                init(); //reload
+            }
+            else {
+                // TO DO: ADD LOGS / ERROR MESSAGE
+            }
         }
     }//GEN-LAST:event_addBtnActionPerformed
 
@@ -245,6 +260,21 @@ public class MgmtProduct extends javax.swing.JPanel {
                 System.out.println(nameFld.getText());
                 System.out.println(stockFld.getText());
                 System.out.println(priceFld.getText());
+                
+                int stock = Integer.parseInt(stockFld.getText());
+                double price = Double.parseDouble(priceFld.getText());
+                String origName = tableModel.getValueAt(table.getSelectedRow(), 0).toString();
+                
+                if (!nameFld.getText().isBlank() && stock > 0 && price > 0) { 
+                    sqlite.updateProduct(nameFld.getText(), stock, price, origName);
+                    // TO DO: ADD LOGS
+                    // PROD, [current username], User edited + nameFld.getText() + product
+
+                    init(); //reload
+                }
+                else {
+                    // TO DO: ADD LOGS / ERROR MESSAGE
+                }
             }
         }
     }//GEN-LAST:event_editBtnActionPerformed
@@ -255,6 +285,11 @@ public class MgmtProduct extends javax.swing.JPanel {
             
             if (result == JOptionPane.YES_OPTION) {
                 System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
+                sqlite.removeProduct(tableModel.getValueAt(table.getSelectedRow(), 0).toString());
+                // TO DO: ADD LOGS
+                // PROD, [current username], User deleted + tableModel.getValueAt(table.getSelectedRow(), 0).toString() + product
+                
+                init(); //reload
             }
         }
     }//GEN-LAST:event_deleteBtnActionPerformed

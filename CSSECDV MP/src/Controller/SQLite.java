@@ -304,7 +304,7 @@ public class SQLite {
     }
     
     public Product getProduct(String name){
-        String sql = "SELECT name, stock, price FROM product WHERE name='" + name + "';";
+        String sql = "SELECT name, stock, price FROM product WHERE name='" + name + "' COLLATE NOCASE;";
         Product product = null;
         try (Connection conn = DriverManager.getConnection(driverURL);
             Statement stmt = conn.createStatement();
@@ -365,6 +365,30 @@ public class SQLite {
             Statement stmt = conn.createStatement()){
             stmt.executeQuery(sql);
             System.out.println("User " + username + "'s password has been updated.");
+            
+        } catch (Exception ex) {
+            System.out.print(ex);
+        }
+    }
+     
+    public void updateProduct(String prodname, int stock, double price, String original) {
+        String sql = "UPDATE product SET name = '" + prodname + "', stock = " + stock + ", price = " + price + " WHERE name = '" + original + "';";
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            Statement stmt = conn.createStatement()){
+            stmt.executeQuery(sql);
+            System.out.println("Product '" + prodname + "' has been updated.");
+            
+        } catch (Exception ex) {
+            System.out.print(ex);
+        }
+    }
+    
+    public void removeProduct(String prodname) {
+        String sql = "DELETE FROM product WHERE name = '" + prodname + "';";
+        try (Connection conn = DriverManager.getConnection(driverURL);
+            Statement stmt = conn.createStatement()){
+            stmt.executeQuery(sql);
+            System.out.println("Product '" + prodname + "' has been deleted.");
             
         } catch (Exception ex) {
             System.out.print(ex);

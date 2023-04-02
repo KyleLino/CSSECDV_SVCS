@@ -266,9 +266,11 @@ public class MgmtUser extends javax.swing.JPanel {
                         // USER, [admin/current username], User + state + ed + tableModel.getValueAt(table.getSelectedRow(), 0).toString()
                         // init(); //reload
                     // Else, password change unsuccessful
+                        // TO DO: Add logs
                 }
                 else {
                     System.out.println("Password & confirm password do not match"); 
+                    // TO DO: Add logs
                 }
             }
         }
