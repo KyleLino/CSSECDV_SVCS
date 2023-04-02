@@ -24,6 +24,10 @@ public class Frame extends javax.swing.JFrame {
     public String firstUsername = "";
     public boolean isFirstUsername = true;
     
+    //CURRENT USER
+    public String currentUsername = "";
+    public int currentRole = 0;
+    
     public Frame() {
         initComponents();
     }
@@ -289,6 +293,10 @@ public class Frame extends javax.swing.JFrame {
                         
                         //LOG FOR LOGIN
                         main.sqlite.addLogs("NOTICE", username.toLowerCase(), "User Logged In Successfully", new Timestamp(new Date().getTime()).toString());
+                        
+                        //Current User For App Functionalities
+                        currentUsername = users.get(nCtr).getUsername();
+                        currentRole = users.get(nCtr).getRole();
                     }else{//user locked
                         System.out.println("User Locked. Communicate with the Admin in-person in order to re-enable the account");
                     }
