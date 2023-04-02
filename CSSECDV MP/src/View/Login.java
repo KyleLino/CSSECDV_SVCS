@@ -89,7 +89,6 @@ public class Login extends javax.swing.JPanel {
     private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
         boolean isExist = frame.loginAction(usernameFld.getText(), passwordFld.getText());
         if(isExist){
-            
             frame.mainNav();
         }else{
             System.out.println("invalid username/password");

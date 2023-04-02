@@ -266,6 +266,35 @@ public class Frame extends javax.swing.JFrame {
     
     public void mainNav(){
         frameView.show(Container, "homePnl");
+        
+        //Disable buttons, not needed anymore
+        adminBtn.setVisible(false);
+        clientBtn.setVisible(false);
+        managerBtn.setVisible(false);
+        staffBtn.setVisible(false);
+        
+        //Change view depending on role (5 - admin, 4 - Manager, 3 - Staff, 2 - Client, 1 - Disabled)
+        switch (currentRole) {
+            case 5:
+                adminHomePnl.showPnl("home");
+                contentView.show(Content, "adminHomePnl");
+                adminBtn.setVisible(true);
+                break;
+            case 4:
+                managerHomePnl.showPnl("home");
+                contentView.show(Content, "managerHomePnl");
+                managerBtn.setVisible(true);
+                break;
+            case 3:
+                staffHomePnl.showPnl("home");
+                contentView.show(Content, "staffHomePnl");
+                staffBtn.setVisible(true);
+                break;
+            default:
+                clientHomePnl.showPnl("home");
+                contentView.show(Content, "clientHomePnl");
+                clientBtn.setVisible(true);
+        }
     }
     
     public void loginNav(){
@@ -314,6 +343,7 @@ public class Frame extends javax.swing.JFrame {
                 
                 if(lockCounter == 5 && users.get(nCtr).getLocked() != 1){
                     System.out.println("User Locked. Communicate with the Admin in-person in order to re-enable the account");
+                    // DON'T REMOVE USER, UPDATE INSTEAD
                     main.sqlite.removeUser(username.toLowerCase());
                     main.sqlite.addUser(username.toLowerCase(), getMd5(password),users.get(nCtr).getRole(),1);
                 }
