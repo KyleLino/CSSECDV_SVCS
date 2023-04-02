@@ -297,6 +297,7 @@ public class Frame extends javax.swing.JFrame {
                         //Current User For App Functionalities
                         currentUsername = users.get(nCtr).getUsername();
                         currentRole = users.get(nCtr).getRole();
+                        lockCounter = 0;
                     }else{//user locked
                         System.out.println("User Locked. Communicate with the Admin in-person in order to re-enable the account");
                     }
