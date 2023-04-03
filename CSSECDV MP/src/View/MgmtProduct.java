@@ -228,20 +228,13 @@ public class MgmtProduct extends javax.swing.JPanel {
                     System.out.println("ddd");
                     sqlite.addLogs("PRODUCT",currentUser.currentUsername , "User Successfully Purchased " + itemQuantity + " Items of " + itemName,new Timestamp(new Date().getTime()).toString());
                     System.out.println("ddd");
+                    init(); //reload
                 }else{
                     System.out.println("eee");
-                    System.out.println("invalid / surpasses item stock | purchase unsuccesful");
+                    System.out.println("invalid / surpasses item stock | purchase unsuccessful");
                     sqlite.addLogs("PRODUCT",currentUser.currentUsername , "User Unsuccessfully Purchased " + itemQuantity + " Items of " + itemName,new Timestamp(new Date().getTime()).toString());
                     System.out.println("eee");
                 }
-                
-                //frame.purchaseAction(itemName, itemStock, itemQuantity);
-                
-                // ADD SQL PURCHASE (HISTORY)
-                    // ONLY ALLOW INT INPUT
-                    // MUST BE LESS THAN STOCK
-                // UPDATE PRODUCT STOCK AFTER SUCCESSFUL PURCHASE
-                // ADD LOG 
             }
         }
     }//GEN-LAST:event_purchaseBtnActionPerformed
@@ -272,13 +265,18 @@ public class MgmtProduct extends javax.swing.JPanel {
             //Product must not exist already; Changed getProduct(name) to be case insensitive
             if (!nameFld.getText().isBlank() && stock > 0 && price > 0 && sqlite.getProduct(nameFld.getText()) == null) { 
                 sqlite.addProduct(nameFld.getText(), stock, price);
-                // TO DO: ADD LOGS
-                // PROD, [current username], User added + stock + nameFld.getText() + products worth + price + each
-                
+                sqlite.addLogs("PRODUCT",
+                        currentUser.currentUsername , 
+                        "User added " + stock + " " + nameFld.getText() + " items worth " + price + " each", 
+                        new Timestamp(new Date().getTime()).toString());
                 init(); //reload
             }
             else {
-                // TO DO: ADD LOGS / ERROR MESSAGE
+                sqlite.addLogs("PRODUCT",
+                        currentUser.currentUsername , 
+                        "User unsuccessfully added new product", 
+                       new Timestamp(new Date().getTime()).toString());
+                JOptionPane.showMessageDialog(null, "Unsuccessfully added new product.", "Add Product", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_addBtnActionPerformed
@@ -310,13 +308,19 @@ public class MgmtProduct extends javax.swing.JPanel {
                 
                 if (!nameFld.getText().isBlank() && stock > 0 && price > 0) { 
                     sqlite.updateProduct(nameFld.getText(), stock, price, origName);
-                    // TO DO: ADD LOGS
-                    // PROD, [current username], User edited + nameFld.getText() + product
+                    sqlite.addLogs("PRODUCT",
+                        currentUser.currentUsername , 
+                        "User edited " + nameFld.getText() + " product", 
+                        new Timestamp(new Date().getTime()).toString());
 
                     init(); //reload
                 }
                 else {
-                    // TO DO: ADD LOGS / ERROR MESSAGE
+                    sqlite.addLogs("PRODUCT",
+                        currentUser.currentUsername , 
+                        "User unsuccessfully edited " + nameFld.getText() + " product", 
+                       new Timestamp(new Date().getTime()).toString());
+                    JOptionPane.showMessageDialog(null, "Unsuccessfully edited product.", "Edited Product", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
@@ -329,8 +333,10 @@ public class MgmtProduct extends javax.swing.JPanel {
             if (result == JOptionPane.YES_OPTION) {
                 System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
                 sqlite.removeProduct(tableModel.getValueAt(table.getSelectedRow(), 0).toString());
-                // TO DO: ADD LOGS
-                // PROD, [current username], User deleted + tableModel.getValueAt(table.getSelectedRow(), 0).toString() + product
+                sqlite.addLogs("PRODUCT",
+                        currentUser.currentUsername , 
+                        "User deleted " + tableModel.getValueAt(table.getSelectedRow(), 0).toString() + " product", 
+                        new Timestamp(new Date().getTime()).toString());
                 
                 init(); //reload
             }

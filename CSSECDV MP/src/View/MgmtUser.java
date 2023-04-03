@@ -7,7 +7,9 @@ package View;
 
 import Controller.SQLite;
 import Model.User;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -24,6 +26,7 @@ public class MgmtUser extends javax.swing.JPanel {
 
     public SQLite sqlite;
     public DefaultTableModel tableModel;
+    public User currentUser;
     
     public MgmtUser(SQLite sqlite) {
         initComponents();
@@ -193,9 +196,10 @@ public class MgmtUser extends javax.swing.JPanel {
                 System.out.println(result.charAt(0));
                 
                 sqlite.updateUserRole(tableModel.getValueAt(table.getSelectedRow(), 0).toString(), Character.getNumericValue(result.charAt(0)));
-                //TO DO: ADD LOGS
-                //USER, [admin/current username], User updated + tableModel.getValueAt(table.getSelectedRow(), 0).toString() + to + result.charAt(0)
-                
+                sqlite.addLogs("USER",
+                        currentUser.currentUsername , 
+                        "User updated " + tableModel.getValueAt(table.getSelectedRow(), 0).toString() + " role to " + result, 
+                       new Timestamp(new Date().getTime()).toString());
                 init(); //reload
             }
         }
@@ -209,9 +213,10 @@ public class MgmtUser extends javax.swing.JPanel {
                 System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
                 
                 sqlite.removeUser(tableModel.getValueAt(table.getSelectedRow(), 0).toString());
-                //TO DO: ADD LOGS
-                //USER, [admin/current username], User deleted + tableModel.getValueAt(table.getSelectedRow(), 0).toString()
-                
+                sqlite.addLogs("USER",
+                        currentUser.currentUsername , 
+                        "User deleted " + tableModel.getValueAt(table.getSelectedRow(), 0).toString(), 
+                       new Timestamp(new Date().getTime()).toString());
                 init(); //reload
             }
         }
@@ -235,6 +240,10 @@ public class MgmtUser extends javax.swing.JPanel {
                 
                 //TO DO: ADD LOGS
                 //USER, [admin/current username], User + state + ed + tableModel.getValueAt(table.getSelectedRow(), 0).toString()
+                sqlite.addLogs("USER",
+                        currentUser.currentUsername , 
+                        "User updated " + tableModel.getValueAt(table.getSelectedRow(), 0).toString() + " lock status to '" + state + "ed'", 
+                       new Timestamp(new Date().getTime()).toString());
                 
                 init(); //reload
             }
@@ -262,15 +271,23 @@ public class MgmtUser extends javax.swing.JPanel {
                     // TO DO: APPLY PASSWORD POLICIES
                     // If valid password
                         // sqlite.updateUserPassword(tableModel.getValueAt(table.getSelectedRow(), 0).toString(), hashPassword);
-                        // TO DO: Add logs
-                        // USER, [admin/current username], User + state + ed + tableModel.getValueAt(table.getSelectedRow(), 0).toString()
+                        sqlite.addLogs("USER",
+                        currentUser.currentUsername , 
+                                "User successfully changed " + tableModel.getValueAt(table.getSelectedRow(), 0).toString() + " password", 
+                        new Timestamp(new Date().getTime()).toString());
                         // init(); //reload
                     // Else, password change unsuccessful
-                        // TO DO: Add logs
+                        sqlite.addLogs("USER",
+                        currentUser.currentUsername , 
+                                "User unsuccessfully changed " + tableModel.getValueAt(table.getSelectedRow(), 0).toString() + " password", 
+                        new Timestamp(new Date().getTime()).toString());
                 }
                 else {
                     System.out.println("Password & confirm password do not match"); 
-                    // TO DO: Add logs
+                    sqlite.addLogs("USER",
+                        currentUser.currentUsername , 
+                                "User unsuccessfully changed " + tableModel.getValueAt(table.getSelectedRow(), 0).toString() + " password", 
+                        new Timestamp(new Date().getTime()).toString());
                 }
             }
         }
