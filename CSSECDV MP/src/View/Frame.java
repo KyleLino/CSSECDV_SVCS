@@ -431,6 +431,7 @@ public class Frame extends javax.swing.JFrame {
         boolean isRegistered = false;
         boolean isUnique = true;
         if(username.trim().isEmpty() || password.trim().isEmpty() || confpass.trim().isEmpty()){ // CHECK IF INPUTS ARE EMPTY
+            JOptionPane.showMessageDialog(null, "Please fill out all fields.", "Register", JOptionPane.ERROR_MESSAGE);
             System.out.println("empty field/s");  
         }else{
             if(password.equals(confpass)){ // CHECKS IF PASSWORD AND CONFPASSWORD IS THE SAME

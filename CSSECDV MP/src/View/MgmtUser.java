@@ -7,6 +7,9 @@ package View;
 
 import Controller.SQLite;
 import Model.User;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -267,32 +270,113 @@ public class MgmtUser extends javax.swing.JPanel {
                 System.out.println(password.getText());
                 System.out.println(confpass.getText());
                 
-                if(password.getText().equals(confpass.getText())) {
-                    // TO DO: APPLY PASSWORD POLICIES
-                    // If valid password
-                        // sqlite.updateUserPassword(tableModel.getValueAt(table.getSelectedRow(), 0).toString(), hashPassword);
-                        sqlite.addLogs("USER",
+                String newPass = password.getText();
+                String newConfPass = confpass.getText();
+                
+                if(newPass.trim().isEmpty() || newConfPass.trim().isEmpty()){ // CHECK IF INPUTS ARE EMPTY
+                    JOptionPane.showMessageDialog(null, "Please fill out all fields.", "Change Password", JOptionPane.ERROR_MESSAGE);
+                    System.out.println("empty field/s");  
+                }else{
+                    if(newPass.equals(newConfPass)){ // CHECKS IF PASSWORD AND CONFPASSWORD IS THE SAME
+
+                        //add condition for strong password to push in
+                        if(checkString(newPass)){
+                            String hashPassword = getMd5(newPass);
+                            //UPDATE PASSWORD SQL
+                            sqlite.updateUserPassword(tableModel.getValueAt(table.getSelectedRow(), 0).toString(), hashPassword);
+                            //LOG FOR SUCCESSFUL PASSWORD CHANGE
+                            sqlite.addLogs("USER",
                         currentUser.currentUsername , 
                                 "User successfully changed " + tableModel.getValueAt(table.getSelectedRow(), 0).toString() + " password", 
                         new Timestamp(new Date().getTime()).toString());
-                        // init(); //reload
-                    // Else, password change unsuccessful
+                            //SUCCESS MESSAGE
+                            JOptionPane.showMessageDialog(null, "Password change successful.", "Change Password", JOptionPane.PLAIN_MESSAGE);
+                            System.out.println("Password changed");
+                            
+                            init(); //reload
+                        }else{
+                            sqlite.addLogs("USER",
+                        currentUser.currentUsername , 
+                                "User unsuccessfully changed password of  " + tableModel.getValueAt(table.getSelectedRow(), 0).toString(), 
+                        new Timestamp(new Date().getTime()).toString());
+                            JOptionPane.showMessageDialog(null, "Password is weak.", "Change Password", JOptionPane.ERROR_MESSAGE);
+                            System.out.println("password must be strong");
+                        }
+
+                    }else{
                         sqlite.addLogs("USER",
                         currentUser.currentUsername , 
-                                "User unsuccessfully changed " + tableModel.getValueAt(table.getSelectedRow(), 0).toString() + " password", 
+                                "User unsuccessfully changed password of " + tableModel.getValueAt(table.getSelectedRow(), 0).toString(), 
                         new Timestamp(new Date().getTime()).toString());
-                }
-                else {
-                    System.out.println("Password & confirm password do not match"); 
-                    sqlite.addLogs("USER",
-                        currentUser.currentUsername , 
-                                "User unsuccessfully changed " + tableModel.getValueAt(table.getSelectedRow(), 0).toString() + " password", 
-                        new Timestamp(new Date().getTime()).toString());
+                        JOptionPane.showMessageDialog(null, "Passwords do not match.", "Change Password", JOptionPane.ERROR_MESSAGE);
+                        System.out.println("password & confirm password not match");
+                    }
                 }
             }
         }
     }//GEN-LAST:event_chgpassBtnActionPerformed
 
+    public String getMd5(String input)
+    {
+        try {
+ 
+            // Static getInstance method is called with hashing MD5
+            MessageDigest md = MessageDigest.getInstance("MD5");
+ 
+            // digest() method is called to calculate message digest
+            // of an input digest() return array of byte
+            byte[] messageDigest = md.digest(input.getBytes());
+ 
+            // Convert byte array into signum representation
+            BigInteger no = new BigInteger(1, messageDigest);
+ 
+            // Convert message digest into hex value
+            String hashtext = no.toString(16);
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+            return hashtext;
+        }
+ 
+        // For specifying wrong message digest algorithms
+        catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    // CHECKS IF THERE ARE ATLEAST 12 CHARACTERS, UPPERCASE, LOWERCASE, NUMBER, SPECIAL CHARACTER
+    private boolean checkString(String str) {
+        char ch;
+        boolean capitalFlag = false;
+        boolean lowerCaseFlag = false;
+        boolean numberFlag = false;
+        boolean specialFlag = false;
+        boolean twelveFlag = false;
+        String specialCharactersString = "!@#$%&*()'+,-./:;<=>?[]^_`{|}";
+        
+        if(str.length() >= 12){
+            twelveFlag = true;
+        }
+        for(int i=0;i < str.length();i++) {
+            ch = str.charAt(i);
+            if( Character.isDigit(ch)) {
+                numberFlag = true;
+            }
+            else if (Character.isUpperCase(ch)) {
+                capitalFlag = true;
+            } 
+            else if (Character.isLowerCase(ch)) {
+                lowerCaseFlag = true;
+            }
+            else if(specialCharactersString.contains(Character.toString(ch))) {
+                //System.out.println(inputString+ " contains special character");
+                specialFlag = true;
+            }    
+            if(twelveFlag && numberFlag && capitalFlag && lowerCaseFlag && specialFlag)
+                return true;
+        }
+        return false;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton chgpassBtn;
