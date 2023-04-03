@@ -198,12 +198,26 @@ public class MgmtUser extends javax.swing.JPanel {
                 System.out.println(tableModel.getValueAt(table.getSelectedRow(), 0));
                 System.out.println(result.charAt(0));
                 
-                sqlite.updateUserRole(tableModel.getValueAt(table.getSelectedRow(), 0).toString(), Character.getNumericValue(result.charAt(0)));
-                sqlite.addLogs("USER",
-                        currentUser.currentUsername , 
-                        "User updated " + tableModel.getValueAt(table.getSelectedRow(), 0).toString() + " role to " + result, 
-                       new Timestamp(new Date().getTime()).toString());
-                init(); //reload
+                String username = tableModel.getValueAt(table.getSelectedRow(), 0).toString();
+                
+                //If user is disabled, unlock user first before editing role
+                if (tableModel.getValueAt(table.getSelectedRow(), 2).toString().equalsIgnoreCase("1")) {
+                    JOptionPane.showMessageDialog(null, "Unlock user first before editing role.", "Edit Role", JOptionPane.ERROR_MESSAGE);
+                }
+                else {
+                    sqlite.updateUserRole(username, Character.getNumericValue(result.charAt(0)));
+                    sqlite.addLogs("USER",
+                            currentUser.currentUsername , 
+                            "User updated " + username + " role to " + result, 
+                            new Timestamp(new Date().getTime()).toString());
+
+                    //If role was updated to Disabled, lock user
+                    if (Character.getNumericValue(result.charAt(0)) == 1) {
+                        sqlite.updateUserLock(username, 1);
+                    }
+
+                    init(); //reload
+                }
             }
         }
     }//GEN-LAST:event_editRoleBtnActionPerformed
@@ -241,8 +255,15 @@ public class MgmtUser extends javax.swing.JPanel {
                 
                 sqlite.updateUserLock(tableModel.getValueAt(table.getSelectedRow(), 0).toString(), locked);
                 
-                //TO DO: ADD LOGS
-                //USER, [admin/current username], User + state + ed + tableModel.getValueAt(table.getSelectedRow(), 0).toString()
+                //If locked user is unlocked, set role to client as default setting
+                //If unlocked user is locked, set role to disabled
+                if (locked == 0) {
+                    sqlite.updateUserRole(tableModel.getValueAt(table.getSelectedRow(), 0).toString(), 2);
+                }
+                else {
+                    sqlite.updateUserRole(tableModel.getValueAt(table.getSelectedRow(), 0).toString(), 1);
+                }
+                    
                 sqlite.addLogs("USER",
                         currentUser.currentUsername , 
                         "User updated " + tableModel.getValueAt(table.getSelectedRow(), 0).toString() + " lock status to '" + state + "ed'", 
@@ -267,8 +288,8 @@ public class MgmtUser extends javax.swing.JPanel {
             int result = JOptionPane.showConfirmDialog(null, message, "CHANGE PASSWORD", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
             
             if (result == JOptionPane.OK_OPTION) {
-                System.out.println(password.getText());
-                System.out.println(confpass.getText());
+                //System.out.println(password.getText());
+                //System.out.println(confpass.getText());
                 
                 String newPass = password.getText();
                 String newConfPass = confpass.getText();

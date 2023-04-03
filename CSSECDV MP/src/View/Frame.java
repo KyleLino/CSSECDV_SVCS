@@ -340,6 +340,7 @@ public class Frame extends javax.swing.JFrame {
                         
                         lockCounter = 0;
                     }else{//user locked
+                        JOptionPane.showMessageDialog(null, "Exceeded maximum login attempts. Please communicate with the Admin in-person in order to re-enable the account.", "User Locked", JOptionPane.ERROR_MESSAGE);
                         System.out.println("User Locked. Communicate with the Admin in-person in order to re-enable the account");
                     }
                 }else if(firstUsername.equalsIgnoreCase(username)){//wrong password same user
@@ -355,11 +356,11 @@ public class Frame extends javax.swing.JFrame {
                 
                 if(lockCounter == 5 && users.get(nCtr).getLocked() != 1){
                     System.out.println("User Locked. Communicate with the Admin in-person in order to re-enable the account");
-                    // TO DO: DON'T REMOVE USER, UPDATE INSTEAD
-                    main.sqlite.updateUserLock(username.toLowerCase(), 1);
-                    //main.sqlite.removeUser(username.toLowerCase());
-                    //main.sqlite.addUser(username.toLowerCase(), getMd5(password),users.get(nCtr).getRole(),1);
                     
+                    //If locked, set user's role to Disabled
+                    main.sqlite.updateUserLock(username.toLowerCase(), 1);
+                    main.sqlite.updateUserRole(username, 1);
+                    main.sqlite.addLogs("NOTICE", username.toLowerCase(), "User is locked after exceeding max login attempts", new Timestamp(new Date().getTime()).toString());
                     JOptionPane.showMessageDialog(null, "Exceeded maximum login attempts. Please communicate with the Admin in-person in order to re-enable the account.", "User Locked", JOptionPane.ERROR_MESSAGE);
                 }
             }
