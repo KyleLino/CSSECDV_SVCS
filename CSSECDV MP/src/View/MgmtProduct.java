@@ -259,25 +259,35 @@ public class MgmtProduct extends javax.swing.JPanel {
             System.out.println(stockFld.getText());
             System.out.println(priceFld.getText());
             
-            int stock = Integer.parseInt(stockFld.getText());
-            double price = Double.parseDouble(priceFld.getText());
-            
-            //Product must not exist already; Changed getProduct(name) to be case insensitive
-            if (!nameFld.getText().isBlank() && stock > 0 && price > 0 && sqlite.getProduct(nameFld.getText()) == null) { 
-                sqlite.addProduct(nameFld.getText(), stock, price);
+            try {
+                int stock = Integer.parseInt(stockFld.getText());
+                double price = Double.parseDouble(priceFld.getText());
+                
+                //Product must not exist already; Changed getProduct(name) to be case insensitive
+                if (!nameFld.getText().isBlank() && stock > 0 && price > 0 && sqlite.getProduct(nameFld.getText()) == null) { 
+                    sqlite.addProduct(nameFld.getText(), stock, price);
+                    sqlite.addLogs("PRODUCT",
+                            currentUser.currentUsername , 
+                            "User added " + stock + " " + nameFld.getText() + " items worth " + price + " each", 
+                            new Timestamp(new Date().getTime()).toString());
+                    init(); //reload
+                }
+                else {
+                    sqlite.addLogs("PRODUCT",
+                            currentUser.currentUsername , 
+                            "User unsuccessfully added new product", 
+                            new Timestamp(new Date().getTime()).toString());
+                    JOptionPane.showMessageDialog(null, "Unsuccessfully added new product.", "Add Product", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (NumberFormatException e) {
                 sqlite.addLogs("PRODUCT",
-                        currentUser.currentUsername , 
-                        "User added " + stock + " " + nameFld.getText() + " items worth " + price + " each", 
-                        new Timestamp(new Date().getTime()).toString());
-                init(); //reload
-            }
-            else {
-                sqlite.addLogs("PRODUCT",
-                        currentUser.currentUsername , 
-                        "User unsuccessfully added new product", 
-                       new Timestamp(new Date().getTime()).toString());
+                            currentUser.currentUsername , 
+                            "User unsuccessfully added new product", 
+                            new Timestamp(new Date().getTime()).toString());
                 JOptionPane.showMessageDialog(null, "Unsuccessfully added new product.", "Add Product", JOptionPane.ERROR_MESSAGE);
             }
+            
+            
         }
     }//GEN-LAST:event_addBtnActionPerformed
 
@@ -302,26 +312,36 @@ public class MgmtProduct extends javax.swing.JPanel {
                 System.out.println(stockFld.getText());
                 System.out.println(priceFld.getText());
                 
-                int stock = Integer.parseInt(stockFld.getText());
-                double price = Double.parseDouble(priceFld.getText());
-                String origName = tableModel.getValueAt(table.getSelectedRow(), 0).toString();
-                
-                if (!nameFld.getText().isBlank() && stock > 0 && price > 0) { 
-                    sqlite.updateProduct(nameFld.getText(), stock, price, origName);
-                    sqlite.addLogs("PRODUCT",
-                        currentUser.currentUsername , 
-                        "User edited " + nameFld.getText() + " product", 
-                        new Timestamp(new Date().getTime()).toString());
+                try {
+                    int stock = Integer.parseInt(stockFld.getText());
+                    double price = Double.parseDouble(priceFld.getText());
+                    String origName = tableModel.getValueAt(table.getSelectedRow(), 0).toString();
 
-                    init(); //reload
-                }
-                else {
+                    if (!nameFld.getText().isBlank() && stock > 0 && price > 0) { 
+                        sqlite.updateProduct(nameFld.getText(), stock, price, origName);
+                        sqlite.addLogs("PRODUCT",
+                            currentUser.currentUsername , 
+                            "User edited " + nameFld.getText() + " product", 
+                            new Timestamp(new Date().getTime()).toString());
+
+                        init(); //reload
+                    }
+                    else {
+                        sqlite.addLogs("PRODUCT",
+                            currentUser.currentUsername , 
+                            "User unsuccessfully edited " + nameFld.getText() + " product", 
+                           new Timestamp(new Date().getTime()).toString());
+                        JOptionPane.showMessageDialog(null, "Unsuccessfully edited product.", "Edited Product", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (NumberFormatException e) {
                     sqlite.addLogs("PRODUCT",
-                        currentUser.currentUsername , 
-                        "User unsuccessfully edited " + nameFld.getText() + " product", 
-                       new Timestamp(new Date().getTime()).toString());
+                            currentUser.currentUsername , 
+                            "User unsuccessfully edited " + nameFld.getText() + " product", 
+                           new Timestamp(new Date().getTime()).toString());
                     JOptionPane.showMessageDialog(null, "Unsuccessfully edited product.", "Edited Product", JOptionPane.ERROR_MESSAGE);
                 }
+                
+                
             }
         }
     }//GEN-LAST:event_editBtnActionPerformed
