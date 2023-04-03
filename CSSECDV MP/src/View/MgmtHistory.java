@@ -42,7 +42,7 @@ public class MgmtHistory extends javax.swing.JPanel {
 //        reportBtn.setVisible(false);
     }
 
-    public void initManager(){
+    public void init(){
 //      CLEAR TABLE
         for(int nCtr = tableModel.getRowCount(); nCtr > 0; nCtr--){
             tableModel.removeRow(0);
@@ -203,7 +203,7 @@ public class MgmtHistory extends javax.swing.JPanel {
         if(currentUser.currentRole == 2){
             initClient();
         }else if(currentUser.currentRole == 4){
-            initManager();
+            init();
         }
         
     }//GEN-LAST:event_reloadBtnActionPerformed
