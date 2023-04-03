@@ -212,22 +212,20 @@ public class MgmtProduct extends javax.swing.JPanel {
                 
                 if(itemStock >= itemQuantity && itemQuantity > 0){
                     if(itemStock == itemQuantity){
-                        System.out.println("aaa");
+                        
                         sqlite.removeProduct(itemName);
-                        System.out.println("aaa");
+                        
                     }else{
-                        System.out.println("bbb");
+                        
                         int newItemStock = itemStock - itemQuantity;
                         
                         sqlite.updateProduct(itemName, newItemStock, itemPrice,itemName);
-                        System.out.println("bbb");
+                        
                     }
-                    System.out.println("ccc");
+                    
                     sqlite.addHistory(currentUser.currentUsername, itemName, itemQuantity, new Timestamp(new Date().getTime()).toString());
-                    System.out.println("ccc");
-                    System.out.println("ddd");
                     sqlite.addLogs("PRODUCT",currentUser.currentUsername , "User Successfully Purchased " + itemQuantity + " Items of " + itemName,new Timestamp(new Date().getTime()).toString());
-                    System.out.println("ddd");
+                    
                     init(); //reload
                 }else{
                     System.out.println("eee");
