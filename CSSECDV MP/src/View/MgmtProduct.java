@@ -13,6 +13,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import Model.User;
+import java.sql.Timestamp;
+import java.util.Date;
+
 /**
  *
  * @author beepxD
@@ -21,6 +25,9 @@ public class MgmtProduct extends javax.swing.JPanel {
 
     public SQLite sqlite;
     public DefaultTableModel tableModel;
+    public Frame frame;
+    
+    public User currentUser;
     
     public MgmtProduct(SQLite sqlite, int role) {
         initComponents();
@@ -193,6 +200,42 @@ public class MgmtProduct extends javax.swing.JPanel {
 
             if (result == JOptionPane.OK_OPTION) {
                 System.out.println(stockFld.getText());
+                String itemName = tableModel.getValueAt(table.getSelectedRow(), 0).toString();
+                int itemStock = Integer.parseInt(tableModel.getValueAt(table.getSelectedRow(), 1).toString());
+                int itemQuantity = Integer.parseInt(stockFld.getText());
+                double itemPrice = Double.parseDouble(tableModel.getValueAt(table.getSelectedRow(), 2).toString());
+                System.out.println(itemName);
+                System.out.println(itemStock);
+                System.out.println(itemQuantity);
+                System.out.println(currentUser.currentUsername);
+                System.out.println(currentUser.currentRole);
+                
+                if(itemStock >= itemQuantity && itemQuantity > 0){
+                    if(itemStock == itemQuantity){
+                        System.out.println("aaa");
+                        sqlite.removeProduct(itemName);
+                        System.out.println("aaa");
+                    }else{
+                        System.out.println("bbb");
+                        int newItemStock = itemStock - itemQuantity;
+                        
+                        sqlite.updateProduct(itemName, newItemStock, itemPrice,itemName);
+                        System.out.println("bbb");
+                    }
+                    System.out.println("ccc");
+                    sqlite.addHistory(currentUser.currentUsername, itemName, itemQuantity, new Timestamp(new Date().getTime()).toString());
+                    System.out.println("ccc");
+                    System.out.println("ddd");
+                    sqlite.addLogs("PRODUCT",currentUser.currentUsername , "User Successfully Purchased " + itemQuantity + " Items of " + itemName,new Timestamp(new Date().getTime()).toString());
+                    System.out.println("ddd");
+                }else{
+                    System.out.println("eee");
+                    System.out.println("invalid / surpasses item stock | purchase unsuccesful");
+                    sqlite.addLogs("PRODUCT",currentUser.currentUsername , "User Unsuccessfully Purchased " + itemQuantity + " Items of " + itemName,new Timestamp(new Date().getTime()).toString());
+                    System.out.println("eee");
+                }
+                
+                //frame.purchaseAction(itemName, itemStock, itemQuantity);
                 
                 // ADD SQL PURCHASE (HISTORY)
                     // ONLY ALLOW INT INPUT

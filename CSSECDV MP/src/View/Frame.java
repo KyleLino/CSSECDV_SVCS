@@ -28,6 +28,8 @@ public class Frame extends javax.swing.JFrame {
     //CURRENT USER
     public String currentUsername = "";
     public int currentRole = 0;
+    public User currentUser;
+    
     
     public Frame() {
         initComponents();
@@ -266,6 +268,7 @@ public class Frame extends javax.swing.JFrame {
     }
     
     public void mainNav(){
+        String curruser = currentUsername;
         frameView.show(Container, "homePnl");
         
         //Disable buttons, not needed anymore
@@ -296,6 +299,7 @@ public class Frame extends javax.swing.JFrame {
                 clientHomePnl.showPnl("home");
                 contentView.show(Content, "clientHomePnl");
                 clientBtn.setVisible(true);
+                System.out.println("current user " + curruser);
         }
     }
     
@@ -328,6 +332,12 @@ public class Frame extends javax.swing.JFrame {
                         //Current User For App Functionalities
                         currentUsername = users.get(nCtr).getUsername();
                         currentRole = users.get(nCtr).getRole();
+                        
+                        currentUser.currentUsername = currentUsername;
+                        currentUser.currentRole = currentRole;
+                        
+                        
+                        
                         lockCounter = 0;
                     }else{//user locked
                         System.out.println("User Locked. Communicate with the Admin in-person in order to re-enable the account");
@@ -512,6 +522,16 @@ public class Frame extends javax.swing.JFrame {
                 return true;
         }
         return false;
+    }
+    
+    //DELETE
+    public void purchaseAction(String itemName, int itemStock, int itemQuantity){
+        //System.out.println(currentUsername);
+        //System.out.println(currentRole);
+        System.out.println("HEREEEEEE");
+        System.out.println(itemName);
+        System.out.println(itemStock);
+        System.out.println(itemQuantity);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -6,6 +6,10 @@ public class User {
     private String password;
     private int role = 2;
     private int locked = 0;
+    
+    public static String currentUsername = "";
+    public static int currentRole = 2;
+    
 
     public User(String username, String password){
         this.username = username;

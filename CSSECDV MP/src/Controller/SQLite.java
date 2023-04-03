@@ -375,10 +375,12 @@ public class SQLite {
         String sql = "UPDATE product SET name = '" + prodname + "', stock = " + stock + ", price = " + price + " WHERE name = '" + original + "';";
         try (Connection conn = DriverManager.getConnection(driverURL);
             Statement stmt = conn.createStatement()){
+            //System.out.println("HERE");
             stmt.executeQuery(sql);
             System.out.println("Product '" + prodname + "' has been updated.");
             
         } catch (Exception ex) {
+            //System.out.println("HEREEE");
             System.out.print(ex);
         }
     }
