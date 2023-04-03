@@ -426,8 +426,9 @@ public class Frame extends javax.swing.JFrame {
         frameView.show(Container, "registerPnl");
     }
     
-    public void registerAction(String username, String password, String confpass){
+    public boolean registerAction(String username, String password, String confpass){
         ArrayList<User> users = main.sqlite.getUsers();
+        boolean isRegistered = false;
         boolean isUnique = true;
         if(username.trim().isEmpty() || password.trim().isEmpty() || confpass.trim().isEmpty()){ // CHECK IF INPUTS ARE EMPTY
             System.out.println("empty field/s");  
@@ -447,19 +448,25 @@ public class Frame extends javax.swing.JFrame {
                         // CASE INSENSITIVE
                         main.sqlite.addUser(username.toLowerCase(), hashPassword);//HASH PASSWORD
                         //LOG FOR USER CREATION 
-                         main.sqlite.addLogs("NOTICE", username.toLowerCase(), "User creation successful", new Timestamp(new Date().getTime()).toString());
+                        main.sqlite.addLogs("NOTICE", username.toLowerCase(), "User creation successful", new Timestamp(new Date().getTime()).toString());
+                        JOptionPane.showMessageDialog(null, "Registration successful. You may now login using the same credentials.", "Register", JOptionPane.PLAIN_MESSAGE);
+                        isRegistered = true;
                         System.out.println("created a user");
                     }else{
+                        JOptionPane.showMessageDialog(null, "Username already exists.", "Register", JOptionPane.ERROR_MESSAGE);
                         System.out.println("username exist");
                     }
                 }else{
+                    JOptionPane.showMessageDialog(null, "Password is weak.", "Register", JOptionPane.ERROR_MESSAGE);
                     System.out.println("password must be strong");
                 }
                
             }else{
+                JOptionPane.showMessageDialog(null, "Passwords do not match.", "Register", JOptionPane.ERROR_MESSAGE);
                 System.out.println("password & confirm password not match");
             }
         }
+        return isRegistered;
     }
     //MD5 HASHING
     public String getMd5(String input)
